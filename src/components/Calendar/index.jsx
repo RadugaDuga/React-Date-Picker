@@ -1,72 +1,100 @@
-import React , {useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classnames from "classnames";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import * as calendar from "./calendar";
 import "./index.css";
 
 
+const Calendar = (props) => {
+  // Получаем сегодняшнюю дату
+  const currentDate = new Date();
+  const [date, setDate] = useState(props.date);
+  const [selectedDate, setSelectedDate] = useState(null);
+  // Отображать или нет календарь
+  const [calendarActive, setCalendarActive] = useState(false);
+  // Обработчики select'ов месяца и года
+  const [monthSelect, setMonthSelect] = useState(null);
+  const [yearSelect, setYearSelect] = useState(null);
 
-const Calendar =(props)=> {
 
-  const [date, setDate] = useState(props.date)
-  console.log(date);
-  const currentDate = new Date()
-  const [selectedDate, setSelectedDate] = useState(null)
-  const [calendarActive, setCalendarActive] = useState(false)
+  const dateShowCompo = useRef()
+  const calendarCompo = useRef()
 
-  const [monthSelect, setMonthSelect] = useState(null)
-  const [yearSelect, setYearSelect] = useState(null)
-  
+
+  const [style, setStyle] = useState()
+  // Кнопки пред. и след. года
   const handlePrevMonthButtonClick = () => {
     const newdate = new Date(date.getFullYear(), date.getMonth() - 1);
-    setDate(newdate)
+    setDate(newdate);
   };
   const handleNextMonthButtonClick = () => {
     const newdate = new Date(date.getFullYear(), date.getMonth() + 1);
-    setDate(newdate)
+    setDate(newdate);
   };
 
-
+  // Кнопки пред. и след. месяца
   const handlePrevYearButtonClick = () => {
-    const newdate = new Date(date.getFullYear() - 1, date.getMonth() );
-    setDate(newdate)
+    const newdate = new Date(date.getFullYear() - 1, date.getMonth());
+    setDate(newdate);
   };
   const handleNextYearButtonClick = () => {
-    const newdate = new Date(date.getFullYear() + 1, date.getMonth() );
-    setDate(newdate)
+    const newdate = new Date(date.getFullYear() + 1, date.getMonth());
+    setDate(newdate);
   };
 
-
+  // Обработчик изменения любого селекта
   const handleSelectChange = () => {
     const year = yearSelect.value;
     const month = monthSelect.value;
     const date = new Date(year, month);
     setDate(date);
   };
+  
+  // Обработчик клика вне элементов календаря и даты 
+  useEffect(() => {
+		let handler = (event) => {
+			if (dateShowCompo.current && !dateShowCompo.current.contains(event.target) && (calendarCompo ? (calendarCompo.current && !calendarCompo.current.contains(event.target)):true)) {
+				setCalendarActive(false)
+			}
+		};
+		document.addEventListener("mousedown", handler);
+		return () => {
+			document.removeEventListener("mousedown", handler);
+		};
+	});
 
+
+  // Обработчик выбора дня
   const handleDayClick = (date) => {
-    setSelectedDate(date)
+    setSelectedDate(date);
     props.onChange(date);
-    setCalendarActive(false)
+    setTimeout(() => {
+      setCalendarActive(false);
+    }, 200);
   };
 
-  
   const { years, monthNames, weekDayNames } = props;
   const monthData = calendar.getMonthData(date.getFullYear(), date.getMonth());
 
   return (
-    <div>
-      <div tabIndex="-1" onClick={()=>setCalendarActive(true)} className="date-show">
-        {selectedDate 
+    <>
+      {/* Компонент отображения даты */}
+      <div
+        ref={dateShowCompo}
+        tabIndex="-1"
+        onClick={() => setCalendarActive(true)}
+        className="date-show"
+      >
+        {selectedDate
           ? selectedDate.toLocaleDateString()
           : new Date().toLocaleDateString()}
-          <svg
+        <svg
           width="12.5"
           height="12.5"
           viewBox="0 0 30 30"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          >
+        >
           <path
             d="M27 30H3C1.3 30 0 28.7 0 27V5C0 3.3 1.1 2 2.5 2H4V4H2.5C2.3 4 2 4.4 2 5V27C2 27.6 2.4 28 3 28H27C27.6 28 28 27.6 28 27V5C28 4.4 27.7 4 27.5 4H26V2H27.5C28.9 2 30 3.3 30 5V27C30 28.7 28.7 30 27 30Z"
             fill="#CFCFCF"
@@ -103,95 +131,90 @@ const Calendar =(props)=> {
           <path d="M12 24H14V26H12V24Z" fill="#CFCFCF" />
           <path d="M8 24H10V26H8V24Z" fill="#CFCFCF" />
           <path d="M4 24H6V26H4V24Z" fill="#CFCFCF" />
-          </svg>
-      </div>
-      {calendarActive && <div className="calendar">
-      <header>
+        </svg>
+      
+        {calendarActive && (
+        <div ref={calendarCompo} className="calendar">
+          <header>
+            <button 
+              disabled={date.getFullYear() === 2010 ? true : false}
+              onClick={handlePrevYearButtonClick}
+            >
+              <span className="prev-year-icon" />
+            </button>
+            <button onClick={handlePrevMonthButtonClick}>
+              <span className="prev-month-icon" />
+            </button>
 
-        <button disabled={date.getFullYear() === 2010 ? true : false} onClick={handlePrevYearButtonClick}>
-          <span className="prev-year-icon" />
-        </button>
-        <button onClick={handlePrevMonthButtonClick}>
-          <span className="prev-month-icon" />
-        </button>
+            <div className="date-container">
+              <select ref={el => setMonthSelect(el)} value={date.getMonth()} onChange={handleSelectChange}>
+                {monthNames.map( (name, index) => (
+                  <option key={name} value={index}>
+                    {name}
+                  </option>
+                ))}
+              </select>
 
-        <div className="date-container">
-          <select
-            ref={(element) => setMonthSelect(element)}
-            value={date.getMonth()}
-            onChange={handleSelectChange}
-          >
-            {monthNames.map((name, index) => (
-              <option key={name} value={index}>
-                {name}
-              </option>
-            ))}
-          </select>
+              <select ref={ el => setYearSelect(el)} value={date.getFullYear()} onChange={handleSelectChange}>
+                {years.map(year => (
+                  <option key={year} value={year}> 
+                    {year} 
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <select
-            ref={(element) => setYearSelect(element)}
-            value={date.getFullYear()}
-            onChange={handleSelectChange}
-          >
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
+            <button onClick={handleNextMonthButtonClick}>
+              <span className="next-month-icon" />
+            </button>
+            <button
+              disabled={date.getFullYear() === 2025 ? true : false}
+              onClick={handleNextYearButtonClick}
+            >
+              <span className="next-year-icon" />
+            </button>
+          </header>
+
+          <table>
+            <thead>
+              <tr>
+                {weekDayNames.map(name => (
+                  <th className="week-name" key={name}>
+                    {name}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+
+            {/* ___________ Отрисовка компонентов дней ___________  */}
+
+            <tbody>
+              {monthData.map((week, index) => (
+                <tr key={index}>
+                  {week.map((date, index) =>
+                    date 
+                    ? <td className="day-container" key={index} onClick={() => handleDayClick(date)}>
+                          <div
+                            className={classnames("day", {
+                              today: calendar.areEqual(date, currentDate),
+                              selected: calendar.areEqual(date, selectedDate),
+                            })}
+                          >
+                            {date.getDate()}
+                          </div>
+                        </td>
+                    : <td key={index}/>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+
+          </table>
         </div>
-
-        <button onClick={handleNextMonthButtonClick}>
-          <span className="next-month-icon" />
-        </button>
-        <button disabled={date.getFullYear() === 2025 ? true : false} onClick={handleNextYearButtonClick}>
-          <span className="next-year-icon" />
-        </button>
-      </header>
-
-      <table>
-        <thead>
-          <tr>
-            {weekDayNames.map((name) => (
-              <th className="week-name" key={name}>{name}</th>
-            ))}
-          </tr>
-        </thead>
-
-        {/* ___________ Отрисовка компонентов дней ___________  */}
-
-        <tbody>
-          {monthData.map((week, index) => (
-            <tr key={index} >
-              {week.map((date, index) =>
-                date ? (
-                  <td
-                    className="day-container"
-                    key={index}
-                    onClick={() => handleDayClick(date)}
-                  >
-                    <div
-                      className={classnames("day", {
-                        today: calendar.areEqual(date, currentDate),
-                        selected: calendar.areEqual(date, selectedDate),
-                      })}
-                    >
-                      {date.getDate()}
-                    </div>
-                  </td>
-                ) : (
-                  <td key={index} />
-                )
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div />
-      </div>}
-    </div>
+      )}
+      </div>
+    </>
   )
-  
 }
 
 
@@ -199,23 +222,20 @@ const Calendar =(props)=> {
 
 Calendar.defaultProps = {
   date: new Date(),
-  years: [2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
+  years: [
+    2025, 2024, 2023, 2022,
+    2021, 2020, 2019, 2018,
+    2017, 2016, 2015, 2014, 
+    2013, 2012, 2011, 2010
+  ],
   monthNames: [
-    "Янв",
-    "Февр",
-    "Март",
-    "Апр",
-    "Май",
-    "Июнь",
-    "Июль",
-    "Авг",
-    "Сент",
-    "Окт",
-    "Нояб",
-    "Дек",
+    "Янв",  "Февр", "Март",
+    "Апр",  "Май",  "Июнь",
+    "Июль", "Авг",  "Сент",
+    "Окт",  "Нояб", "Дек",
   ],
   weekDayNames: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
   onChange: Function.prototype,
-}
+};
 
-export default Calendar
+export default Calendar;
