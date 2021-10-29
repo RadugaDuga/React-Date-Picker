@@ -1,3 +1,21 @@
+.date-show {
+  padding: 4px 11px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 150px;
+  height: 32px;
+  box-sizing: border-box;
+  border: 1px solid #d9d9d9;
+  position: relative;
+}
+
+.date-show:focus {
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, .2);
+  border: 1px solid #40A8FD;
+}
+
 .calendar {
   box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014,
     0 9px 28px 8px #0000000d;
@@ -21,7 +39,6 @@ button:disabled {
   border-color: #bfbfbf7c;
 }
 
-
 .calendar header button,
 .calendar header select {
   font-size: 14px;
@@ -30,7 +47,7 @@ button:disabled {
   text-align: center;
   outline: none;
   cursor: pointer;
-  color:#2e2e2e;
+  color: #2e2e2e;
   background-color: white;
 }
 .calendar header button {
@@ -41,8 +58,8 @@ button:disabled {
   padding: 0px 8px;
 }
 .calendar header select {
-    max-height: 200px;
-    overflow: hidden;
+  max-height: 200px;
+  overflow: hidden;
   display: flex;
   font-weight: 600;
   width: 40px;
@@ -57,7 +74,6 @@ button:disabled {
   position: relative;
   transform: rotate(135deg);
 }
-
 
 .prev-year-icon {
   position: relative;
@@ -107,11 +123,11 @@ button:hover span::after {
   transition: 0.2s;
 }
 
-.prev-year-icon::after, .next-year-icon::after {
+.prev-year-icon::after,
+.next-year-icon::after {
   top: 4px;
   left: 4px;
 }
-
 
 /* Контейнер дней */
 .calendar table {
