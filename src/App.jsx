@@ -5,13 +5,7 @@ const App = () => {
   const [date, setDate] = useState(null);
   const handleDateChange = (date) => setDate(date);
 
-  return (
-    <div>
-      
-      {/* {date && <p>Выбранная дата: {date.toLocaleDateString()}</p>} */}
-      <Calendar onChange={handleDateChange} />
-    </div>
-  );
+  return <Calendar alignment="0" onChange={handleDateChange} />;
 };
 
 export default App;

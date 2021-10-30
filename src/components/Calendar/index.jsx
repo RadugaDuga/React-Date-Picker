@@ -7,18 +7,18 @@ import "./index.css";
 const Calendar = (props) => {
   // Получаем сегодняшнюю дату
   const currentDate = new Date();
-  const [date, setDate] = useState(props.date);
+  const [date, setDate] = useState(currentDate);
   const [selectedDate, setSelectedDate] = useState(null);
+
   // Отображать или нет календарь
   const [calendarActive, setCalendarActive] = useState(false);
+
   // Обработчики select'ов месяца и года
   const [monthSelect, setMonthSelect] = useState(null);
   const [yearSelect, setYearSelect] = useState(null);
 
   // Рефы для отслеживания клика вне 
   const dateShowCompo = useRef()
-  const calendarCompo = useRef()
-
 
   const [style, setStyle] = useState()
   // Кнопки пред. и след. года
@@ -50,10 +50,9 @@ const Calendar = (props) => {
   };
   
   // Обработчик клика вне элементов календаря и даты 
-  //todo Если добавить зависимость calendarActive то селект с елемента не пропадает 
   useEffect(() => {
 		let handler = (e) => {
-			if (dateShowCompo.current && !dateShowCompo.current.contains(e.target) & (calendarCompo && (calendarCompo.current && !calendarCompo.current.contains(e.target)))) {
+			if (dateShowCompo.current && !dateShowCompo.current.contains(e.target)) {
 				setCalendarActive(false)
 			}
 		};
@@ -62,7 +61,7 @@ const Calendar = (props) => {
 		return () => {
 			document.removeEventListener("mousedown", handler);
 		};
-	});
+	}, [calendarActive]);
 
   
   // Обработчик выбора дня
@@ -135,7 +134,7 @@ const Calendar = (props) => {
         </svg>
       
         {calendarActive && (
-        <div ref={calendarCompo} className="calendar">
+        <div className="calendar">
           <header>
             <button 
               disabled={date.getFullYear() === 2010 ? true : false}
@@ -211,6 +210,7 @@ const Calendar = (props) => {
             </tbody>
 
           </table>
+          <div onClick={()=>{handleDayClick(new Date())}} className="today-btn">Сегодня</div>
         </div>
       )}
       </div>
@@ -222,7 +222,6 @@ const Calendar = (props) => {
 
 
 Calendar.defaultProps = {
-  date: new Date(),
   years: [
     2025, 2024, 2023, 2022,
     2021, 2020, 2019, 2018,

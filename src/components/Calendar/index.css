@@ -14,16 +14,21 @@
   border: 1px solid #d9d9d9;
   position: relative;
   cursor: pointer;
+  transition: .3s;
+}
+
+.date-show:hover {
+  border: 1px solid #fdab40;
 }
 
 @keyframes aaae {
   from {
-    transform: translateY(-20px);
+    transform: scaleY(0.8);
     opacity: 0;
     z-index: -1;
   }
   to {
-    transform: translateY(0) ;
+    transform: scaleY(1) ;
     opacity: 1;
     z-index: -1  
   }
@@ -40,7 +45,7 @@
 
 .calendar {
   transform-origin:top;
-  animation: aaae .2s ease-out ;
+  animation: aaae .2s ease-out;
   cursor: auto;
   position: absolute;
   /* 3px на основе border + box-shadow у элемента date-show */
@@ -49,6 +54,10 @@
   box-shadow: 0 3px 6px -4px #00000013, 0 6px 16px #00000009,
     0 9px 28px 8px #0000000a;
   border-radius: 4px;
+}
+
+.calendar-right{
+  
 }
 
 .calendar header {
@@ -163,7 +172,7 @@ button:hover span::after {
   border-spacing: 0;
   color: #262626;
   font-size: 14px;
-  padding: 8px 12px 12px;
+  padding: 8px 12px;
 }
 
 /* Имена недель  */
@@ -195,6 +204,19 @@ button:hover span::after {
   padding: 0px 6px;
   box-sizing: border-box;
   cursor: pointer;
+}
+
+/* Кнопка сегодня */
+.today-btn {
+  height: 40px;
+  cursor: pointer;
+  line-height: 36px;
+  text-align: center;
+  color: #fdab40;
+  border-top: 1px solid #f0f0f0;
+}
+.today-btn:hover {
+  color: #ff9100;
 }
 
 .day-container:hover .day {
