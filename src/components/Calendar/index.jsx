@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import classnames from "classnames";
-import PropTypes from "prop-types";
 import * as calendar from "./calendar";
 import "./index.css";
 
@@ -16,7 +15,7 @@ const Calendar = (props) => {
   const [monthSelect, setMonthSelect] = useState(null);
   const [yearSelect, setYearSelect] = useState(null);
 
-
+  // Рефы для отслеживания клика вне 
   const dateShowCompo = useRef()
   const calendarCompo = useRef()
 
@@ -51,19 +50,21 @@ const Calendar = (props) => {
   };
   
   // Обработчик клика вне элементов календаря и даты 
+  //todo Если добавить зависимость calendarActive то селект с елемента не пропадает 
   useEffect(() => {
-		let handler = (event) => {
-			if (dateShowCompo.current && !dateShowCompo.current.contains(event.target) && (calendarCompo ? (calendarCompo.current && !calendarCompo.current.contains(event.target)):true)) {
+		let handler = (e) => {
+			if (dateShowCompo.current && !dateShowCompo.current.contains(e.target) & (calendarCompo && (calendarCompo.current && !calendarCompo.current.contains(e.target)))) {
 				setCalendarActive(false)
 			}
 		};
+    console.log("handler effect activated");
 		document.addEventListener("mousedown", handler);
 		return () => {
 			document.removeEventListener("mousedown", handler);
 		};
 	});
 
-
+  
   // Обработчик выбора дня
   const handleDayClick = (date) => {
     setSelectedDate(date);
@@ -178,9 +179,9 @@ const Calendar = (props) => {
           <table>
             <thead>
               <tr>
-                {weekDayNames.map(name => (
-                  <th className="week-name" key={name}>
-                    {name}
+                {weekDayNames.map(wname => (
+                  <th className="week-name" key={wname}>
+                    {wname}
                   </th>
                 ))}
               </tr>

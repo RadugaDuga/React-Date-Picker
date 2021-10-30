@@ -16,6 +16,19 @@
   cursor: pointer;
 }
 
+@keyframes aaae {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+    z-index: -1;
+  }
+  to {
+    transform: translateY(0) ;
+    opacity: 1;
+    z-index: -1  
+  }
+}
+
 .date-show:focus {
   box-shadow: 0 0 0 2px rgba(255, 155, 24, 0.2);
   border: 1px solid #fdab40;
@@ -26,6 +39,8 @@
 }
 
 .calendar {
+  transform-origin:top;
+  animation: aaae .2s ease-out ;
   cursor: auto;
   position: absolute;
   /* 3px на основе border + box-shadow у элемента date-show */
