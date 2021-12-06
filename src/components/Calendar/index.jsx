@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import classnames from "classnames";
 import * as calendar from "./calendar";
 import "./index.css";
 
 
 const Calendar = (props) => {
-  // Получаем сегодняшнюю дату
+  // Получаем актуальную дату
   const currentDate = new Date();
   const [date, setDate] = useState(currentDate);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -17,10 +16,9 @@ const Calendar = (props) => {
   const [monthSelect, setMonthSelect] = useState(null);
   const [yearSelect, setYearSelect] = useState(null);
 
-  // Рефы для отслеживания клика вне 
+  // Реф для отслеживания клика вне 
   const dateShowCompo = useRef()
 
-  const [style, setStyle] = useState()
   // Кнопки пред. и след. года
   const handlePrevMonthButtonClick = () => {
     const newdate = new Date(date.getFullYear(), date.getMonth() - 1);
@@ -56,7 +54,6 @@ const Calendar = (props) => {
 				setCalendarActive(false)
 			}
 		};
-    console.log("handler effect activated");
 		document.addEventListener("mousedown", handler);
 		return () => {
 			document.removeEventListener("mousedown", handler);
@@ -194,15 +191,16 @@ const Calendar = (props) => {
                   {week.map((date, index) =>
                     date 
                     ? <td className="day-container" key={index} onClick={() => handleDayClick(date)}>
-                          <div
-                            className={classnames("day", {
-                              today: calendar.areEqual(date, currentDate),
-                              selected: calendar.areEqual(date, selectedDate),
-                            })}
-                          >
-                            {date.getDate()}
-                          </div>
-                        </td>
+                        <div
+                          className={ 
+                            "day " 
+                            + ( calendar.areEqual(date, currentDate) ? "today " : "" ) 
+                            + ( calendar.areEqual(date, selectedDate) ? "selected " : "" )
+                          }
+                        >
+                          {date.getDate()}
+                        </div>
+                      </td>
                     : <td key={index}/>
                   )}
                 </tr>
@@ -210,15 +208,13 @@ const Calendar = (props) => {
             </tbody>
 
           </table>
-          <div onClick={()=>{handleDayClick(new Date())}} className="today-btn">Сегодня</div>
+          <div onClick={()=>{handleDayClick(new Date()); setDate(new Date())}} className="today-btn">Сегодня</div>
         </div>
       )}
       </div>
     </>
   )
 }
-
-
 
 
 Calendar.defaultProps = {
